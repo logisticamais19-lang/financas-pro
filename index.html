@@ -743,6 +743,15 @@ body.modal-aberta {
   white-space: nowrap;
   flex-shrink: 0;
 }
+
+/* ── BOTÃO INSTALAR FAB (acima da calculadora) ── */
+@keyframes pulsePWA {
+  0%,100% { box-shadow: 0 4px 16px rgba(33,208,122,.4); transform: scale(1); }
+  50%      { box-shadow: 0 4px 28px rgba(33,208,122,.7); transform: scale(1.08); }
+}
+/* Só aparece no mobile */
+@media(min-width:769px){ #fab-install-pwa { display:none !important; } }
+#fab-install-pwa.show { display:flex !important; align-items:center; justify-content:center; }
 </style>
 <script>
 // Registrar Service Worker IMEDIATAMENTE ao carregar
@@ -1151,6 +1160,20 @@ button>
       <button class="calc-btn span2" onclick="ca('0')">0</button><button class="calc-btn" onclick="ca('.')">.</button><button class="calc-btn eq" onclick="ca('=')">=</button>
     </div>
   </div>
+  <!-- Botão instalar PWA — só mobile, aparece acima da calculadora -->
+  <button id="fab-install-pwa"
+    onclick="promptInstall()"
+    title="Instalar App"
+    style="display:none;width:44px;height:44px;border-radius:13px;
+           background:linear-gradient(135deg,#21d07a,#16a34a);
+           border:none;color:#041309;font-size:20px;
+           box-shadow:0 4px 16px rgba(33,208,122,.4);
+           cursor:pointer;margin-bottom:8px;
+           animation:pulsePWA 2s ease-in-out infinite;
+           -webkit-tap-highlight-color:transparent">
+    📲
+  </button>
+
   <button class="fab" onclick="toggleCalc()">🧮</button>
 </div>
 
@@ -1678,55 +1701,65 @@ window.addEventListener('beforeinstallprompt', function(e){
   e.preventDefault();
   _deferredInstall = e;
 
-  // Só mobile
+  // Verificar se é mobile
   var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-  // Já instalado como app
+  // Verificar se já está instalado
   var isStandalone = window.matchMedia('(display-mode:standalone)').matches
                   || window.navigator.standalone === true;
-  // Usuário fechou o banner recentemente (7 dias)
-  var closed = parseInt(localStorage.getItem('install_banner_closed') || '0');
-  var suppressed = (Date.now() - closed) < (7 * 24 * 60 * 60 * 1000);
 
-  console.log('PWA install disponível | mobile:', isMobile, '| standalone:', isStandalone, '| suprimido:', suppressed);
+  console.log('📲 PWA instalável | mobile:', isMobile, '| standalone:', isStandalone);
 
-  if(!isMobile || isStandalone || suppressed) return;
+  // Se já instalado, não mostrar nada
+  if(isStandalone) return;
 
-  // Mostrar banner
-  var banner = document.getElementById('install-login-banner');
-  if(banner){
-    banner.classList.add('show');
-    var ls = document.getElementById('login-screen');
-    if(ls) ls.classList.add('has-banner');
+  if(isMobile){
+    // MOBILE: mostrar botão FAB acima da calculadora
+    var fabBtn = document.getElementById('fab-install-pwa');
+    if(fabBtn) fabBtn.classList.add('show');
+
+    // E mostrar banner na tela de login (se ainda estiver na tela de login)
+    var loginScreen = document.getElementById('login-screen');
+    if(loginScreen && loginScreen.style.display !== 'none'){
+      var banner = document.getElementById('install-login-banner');
+      if(banner){
+        banner.classList.add('show');
+        loginScreen.classList.add('has-banner');
+      }
+    }
   }
+  // Desktop: não mostrar nada (usuário usa no browser normalmente)
 });
-window.addEventListener('appinstalled',()=>{
-  _deferredInstall=null;
+window.addEventListener('appinstalled', function(){
+  _deferredInstall = null;
   fecharBannerInstall();
-  ['fab-install-btn','install-topbar-btn'].forEach(id=>{
-    const b=document.getElementById(id);if(b)b.classList.remove('show');
+  ['fab-install-pwa','fab-install-btn','install-topbar-btn'].forEach(function(id){
+    var b = document.getElementById(id);
+    if(b){ b.classList.remove('show'); b.style.display='none'; }
   });
   notify('🎉 Finanças Pro instalado! Acesse pela tela inicial.');
 });
 function promptInstall(){
-  // iOS: instruções manuais
-  if(/iPhone|iPad|iPod/i.test(navigator.userAgent)&&!_deferredInstall){
+  // iOS: instruções manuais (não tem beforeinstallprompt)
+  if(/iPhone|iPad|iPod/i.test(navigator.userAgent) && !_deferredInstall){
     notify('📱 No Safari: toque em ↑ Compartilhar → "Adicionar à Tela Inicial"','warn');
     return;
   }
   if(!_deferredInstall){
-    notify('📲 Abra no Chrome Android para instalar o app','warn');
+    notify('📲 Abra no Chrome Android para instalar','warn');
     return;
   }
   _deferredInstall.prompt();
-  _deferredInstall.userChoice.then(r=>{
-    if(r.outcome==='accepted'){
+  _deferredInstall.userChoice.then(function(r){
+    if(r.outcome === 'accepted'){
       notify('🎉 App instalado! Acesse pela tela inicial.');
-      fecharBannerInstall();
-      ['fab-install-btn','install-topbar-btn'].forEach(id=>{
-        const b=document.getElementById(id);if(b)b.classList.remove('show');
+      // Esconder todos os botões de install
+      ['fab-install-pwa','fab-install-btn','install-topbar-btn'].forEach(function(id){
+        var b=document.getElementById(id);
+        if(b){ b.classList.remove('show'); b.style.display='none'; }
       });
+      fecharBannerInstall();
     }
-    _deferredInstall=null;
+    _deferredInstall = null;
   });
 }
 function ativarFabInstall(){
