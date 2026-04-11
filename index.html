@@ -752,6 +752,94 @@ body.modal-aberta {
 /* Só aparece no mobile */
 @media(min-width:769px){ #fab-install-pwa { display:none !important; } }
 #fab-install-pwa.show { display:flex !important; align-items:center; justify-content:center; }
+
+/* ═══ CARD INSTALAR PWA FLUTUANTE ═══ */
+#pwa-install-card {
+  position: fixed;
+  bottom: calc(var(--safe-bot) + 128px);
+  right: 12px;
+  z-index: 619;
+  display: none;
+  flex-direction: column;
+  width: 200px;
+  background: linear-gradient(145deg, #0d2b1a, #0a1f12);
+  border: 1px solid rgba(33,208,122,.35);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5), 0 0 0 1px rgba(33,208,122,.1);
+  animation: cardEntrada .4s cubic-bezier(.34,1.2,.64,1);
+}
+#pwa-install-card.show { display: flex !important; }
+
+@keyframes cardEntrada {
+  from { opacity:0; transform: translateY(16px) scale(.95); }
+  to   { opacity:1; transform: translateY(0)    scale(1); }
+}
+
+/* Só mobile */
+@media(min-width:769px){ #pwa-install-card { display:none !important; } }
+
+.pwa-card-close {
+  position: absolute;
+  top: 8px; right: 10px;
+  background: none; border: none;
+  color: rgba(255,255,255,.3);
+  font-size: 14px; cursor: pointer;
+  line-height: 1; padding: 2px 4px;
+}
+.pwa-card-close:hover { color: rgba(255,255,255,.7); }
+
+.pwa-card-icon {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.pwa-card-title {
+  font-size: 13px; font-weight: 800;
+  color: #21d07a; text-align: center;
+  margin-bottom: 4px; letter-spacing: -.01em;
+}
+.pwa-card-sub {
+  font-size: 10px; color: rgba(255,255,255,.45);
+  text-align: center; line-height: 1.5;
+  margin-bottom: 12px;
+}
+.pwa-card-btn {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #21d07a, #16a34a);
+  color: #041309;
+  border: none;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: -.01em;
+  box-shadow: 0 3px 12px rgba(33,208,122,.3);
+  transition: all .2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.pwa-card-btn:active { transform: scale(.96); opacity: .9; }
+
+/* Seta apontando para a calculadora */
+.pwa-card-arrow {
+  position: absolute;
+  bottom: -10px;
+  right: 18px;
+  width: 0; height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid rgba(33,208,122,.35);
+}
+.pwa-card-arrow::after {
+  content: '';
+  position: absolute;
+  bottom: 2px; left: -8px;
+  width: 0; height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #0d2b1a;
+}
 </style>
 <script>
 // Registrar Service Worker IMEDIATAMENTE ao carregar
@@ -788,56 +876,24 @@ if('serviceWorker' in navigator){
       <button class="btn" onclick="skipOnboarding()">Pular</button>
       <button class="btn-primary" id="onboard-next" onclick="nextOnboard()">Próximo →</
 /* ═══ BANNER INSTALAR — TOPO DA TELA (só mobile) ═══ */
-#install-login-banner {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 9999;
-  display: none;
-  align-items: center;
-  gap: 14px;
-  padding: 16px 20px;
-  padding-top: calc(16px + env(safe-area-inset-top, 0px));
-  background: linear-gradient(135deg, #065f46, #064e3b);
-  border-bottom: 1px solid rgba(52,211,153,.3);
-  box-shadow: 0 4px 24px rgba(0,0,0,.4);
-  animation: slideFromTop .4s cubic-bezier(.34,1.2,.64,1);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-#install-login-banner.show { display: flex !important; }
 
-@keyframes slideFromTop {
-  from { transform: translateY(-100%); opacity: 0; }
+
+
+
   to   { transform: translateY(0);     opacity: 1; }
 }
 
-.ilb-icon { font-size: 36px; flex-shrink: 0; }
-.ilb-text { flex: 1; }
-.ilb-title {
-  font-size: 14px; font-weight: 800;
-  color: #ffffff; margin-bottom: 2px;
-}
-.ilb-sub {
-  font-size: 11px; color: rgba(255,255,255,.65); line-height: 1.4;
-}
-.ilb-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; flex-shrink: 0; }
-.ilb-btn-install {
-  background: #21d07a; color: #041309;
-  border: none; border-radius: 10px;
-  padding: 9px 18px; font-size: 13px; font-weight: 800;
-  cursor: pointer; white-space: nowrap;
-  box-shadow: 0 2px 12px rgba(33,208,122,.35);
-}
-.ilb-btn-close {
-  background: transparent; border: none;
-  color: rgba(255,255,255,.5); font-size: 18px;
-  cursor: pointer; padding: 0; line-height: 1;
-  align-self: flex-start;
-}
+
+
+
+
+
+
+
 
 /* Compensar o banner no topo da login-screen */
-#login-screen.has-banner { padding-top: 100px; }
-@media(min-width:769px) { #install-login-banner { display: none !important; } }
+
+@media(min-width:769px) {  }
 button>
     </div>
   </div>
@@ -906,22 +962,7 @@ button>
         <button class="bell-btn" id="bell-btn" onclick="abrirNC()" title="Notificações">🔔</button>
         <span class="bell-badge" id="bell-badge"></span>
       </div>
-      <!-- Botão instalar PWA — aparece só quando disponível -->
-      <button id="install-topbar-btn" onclick="promptInstall()" title="Instalar App"
-        style="display:none;align-items:center;gap:5px;padding:7px 11px;background:rgba(33,208,122,.12);border:0.5px solid rgba(33,208,122,.4);border-radius:10px;color:#21d07a;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;animation:pulseGreen 2s ease-in-out infinite">
-        📲 <span class="qa-label-hide">Instalar</span>
-      </button>
-      <div class="qa-wrap" id="qa-wrap" style="display:flex;align-items:center;gap:6px">
-
-        <!-- ✝ Deus Seja Louvado -->
-        <button onclick="abrirModal('modal-deus')"
-          style="display:flex;align-items:center;gap:6px;padding:7px 12px;background:rgba(234,179,8,.1);border:0.5px solid rgba(234,179,8,.4);border-radius:10px;color:#fbbf24;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent"
-          title="Deus Seja Louvado">
-          <span>✝</span>
-          <span class="qa-label-hide">Deus Seja Louvado</span>
-        </button>
-
-        <!-- 🤖 Análise IA -->
+              <!-- 🤖 Análise IA -->
         <button onclick="abrirModalScoreIA('ia')"
           style="display:flex;align-items:center;gap:6px;padding:7px 12px;background:rgba(155,125,248,.1);border:0.5px solid rgba(155,125,248,.3);border-radius:10px;color:#9b7df8;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent"
           title="Análise IA">
@@ -1161,18 +1202,7 @@ button>
     </div>
   </div>
   <!-- Botão instalar PWA — só mobile, aparece acima da calculadora -->
-  <button id="fab-install-pwa"
-    onclick="promptInstall()"
-    title="Instalar App"
-    style="display:none;width:44px;height:44px;border-radius:13px;
-           background:linear-gradient(135deg,#21d07a,#16a34a);
-           border:none;color:#041309;font-size:20px;
-           box-shadow:0 4px 16px rgba(33,208,122,.4);
-           cursor:pointer;margin-bottom:8px;
-           animation:pulsePWA 2s ease-in-out infinite;
-           -webkit-tap-highlight-color:transparent">
-    📲
-  </button>
+  
 
   <button class="fab" onclick="toggleCalc()">🧮</button>
 </div>
@@ -1701,37 +1731,27 @@ window.addEventListener('beforeinstallprompt', function(e){
   e.preventDefault();
   _deferredInstall = e;
 
-  // Verificar se é mobile
+  // Só mobile
   var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-  // Verificar se já está instalado
   var isStandalone = window.matchMedia('(display-mode:standalone)').matches
                   || window.navigator.standalone === true;
 
   console.log('📲 PWA instalável | mobile:', isMobile, '| standalone:', isStandalone);
 
-  // Se já instalado, não mostrar nada
-  if(isStandalone) return;
+  if(!isMobile || isStandalone) return;
 
-  if(isMobile){
-    // MOBILE: mostrar botão FAB acima da calculadora
-    var fabBtn = document.getElementById('fab-install-pwa');
-    if(fabBtn) fabBtn.classList.add('show');
+  // Verificar se fechou recentemente (3 dias)
+  var closed = parseInt(localStorage.getItem('pwa_card_closed') || '0');
+  var recente = (Date.now() - closed) < (3 * 24 * 60 * 60 * 1000);
+  if(recente) return;
 
-    // E mostrar banner na tela de login (se ainda estiver na tela de login)
-    var loginScreen = document.getElementById('login-screen');
-    if(loginScreen && loginScreen.style.display !== 'none'){
-      var banner = document.getElementById('install-login-banner');
-      if(banner){
-        banner.classList.add('show');
-        loginScreen.classList.add('has-banner');
-      }
-    }
-  }
-  // Desktop: não mostrar nada (usuário usa no browser normalmente)
+  // Mostrar card flutuante acima da calculadora
+  var card = document.getElementById('pwa-install-card');
+  if(card) card.classList.add('show');
 });
-window.addEventListener('appinstalled', function(){
+window.addEventListener('appinstalled', function(){ fecharCardInstall();
   _deferredInstall = null;
-  fecharBannerInstall();
+  
   ['fab-install-pwa','fab-install-btn','install-topbar-btn'].forEach(function(id){
     var b = document.getElementById(id);
     if(b){ b.classList.remove('show'); b.style.display='none'; }
@@ -1739,11 +1759,23 @@ window.addEventListener('appinstalled', function(){
   notify('🎉 Finanças Pro instalado! Acesse pela tela inicial.');
 });
 function promptInstall(){
-  // iOS: instruções manuais (não tem beforeinstallprompt)
   if(/iPhone|iPad|iPod/i.test(navigator.userAgent) && !_deferredInstall){
     notify('📱 No Safari: toque em ↑ Compartilhar → "Adicionar à Tela Inicial"','warn');
     return;
   }
+  if(!_deferredInstall){
+    notify('📲 Abra no Chrome Android para instalar','warn');
+    return;
+  }
+  _deferredInstall.prompt();
+  _deferredInstall.userChoice.then(function(r){
+    if(r.outcome === 'accepted'){
+      notify('🎉 App instalado! Acesse pela tela inicial.');
+      fecharCardInstall();
+    }
+    _deferredInstall = null;
+  });
+}
   if(!_deferredInstall){
     notify('📲 Abra no Chrome Android para instalar','warn');
     return;
@@ -1757,7 +1789,7 @@ function promptInstall(){
         var b=document.getElementById(id);
         if(b){ b.classList.remove('show'); b.style.display='none'; }
       });
-      fecharBannerInstall();
+      
     }
     _deferredInstall = null;
   });
@@ -1801,19 +1833,26 @@ window.renderAll=function(){
 // Verificar se já está instalado — esconder banner se sim
 if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone){
   document.addEventListener('DOMContentLoaded',()=>{
-    const b=document.getElementById('install-login-banner');
+    const b=document.getElementById('');
     if(b)b.style.display='none';
   });
 }
 
 function fecharBannerInstall(e){
   if(e)e.stopPropagation();
-  const b=document.getElementById('install-login-banner');
+  const b=document.getElementById('');
   if(b){ b.classList.remove('show'); b.style.display='none'; }
   const ls=document.getElementById('login-screen');
   if(ls)ls.classList.remove('has-banner');
   // Salvar preferência para não mostrar de novo por 7 dias
   localStorage.setItem('install_banner_closed', Date.now());
+}
+
+function fecharCardInstall(){
+  var card = document.getElementById('pwa-install-card');
+  if(card){ card.classList.remove('show'); }
+  // Não mostrar de novo por 3 dias
+  localStorage.setItem('pwa_card_closed', Date.now());
 }
 </script>
 
@@ -1906,9 +1945,6 @@ function fecharBannerInstall(e){
   </div>
 </div>
 
-<!-- ═══ BANNER INSTALAR PWA — só mobile, topo da tela ═══ -->
-<div id="install-login-banner">
-  <div class="ilb-icon">📲</div>
   <div class="ilb-text">
     <div class="ilb-title">Instalar Finanças Pro</div>
     <div class="ilb-sub">Toque para adicionar à tela inicial e usar como app</div>
@@ -1917,6 +1953,18 @@ function fecharBannerInstall(e){
     <button class="ilb-btn-close" onclick="fecharBannerInstall(event)">✕</button>
     <button class="ilb-btn-install" onclick="promptInstall()">Instalar</button>
   </div>
+</div>
+
+<!-- ═══ CARD FLUTUANTE INSTALAR PWA (só mobile) ═══ -->
+<div id="pwa-install-card">
+  <button class="pwa-card-close" onclick="fecharCardInstall()" title="Fechar">✕</button>
+  <div class="pwa-card-icon">📲</div>
+  <div class="pwa-card-title">Instalar Finanças Pro</div>
+  <div class="pwa-card-sub">Adicione à tela inicial e use como app nativo</div>
+  <button class="pwa-card-btn" onclick="promptInstall()">
+    ⬇ Instalar agora
+  </button>
+  <div class="pwa-card-arrow"></div>
 </div>
 </body>
 </html>
