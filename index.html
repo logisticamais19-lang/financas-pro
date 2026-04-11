@@ -1311,15 +1311,7 @@ try{
 </script>
 
 <script>
-// Verificar se deve mostrar o banner de install
-(function(){
-  const closed=parseInt(localStorage.getItem('install_banner_closed')||'0');
-  const sevenDays=7*24*60*60*1000;
-  if(Date.now()-closed < sevenDays){
-    // Usuário fechou recentemente — não capturar o evento
-    window._installBannerSuppressed=true;
-  }
-})();
+
 
 const MASTER_CODE='Senha123.';
 const fmt=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(v||0));
@@ -1794,10 +1786,7 @@ function promptInstall(){
     _deferredInstall = null;
   });
 }
-function ativarFabInstall(){
-  if(window.matchMedia('(display-mode:standalone)').matches)return;
-  const b=document.getElementById('fab-install-btn');if(!b)return;
-  if(_deferredInstall){b.classList.add('show');return;}
+function ativarFabInstall(){}
   let n=0;const t=setInterval(()=>{n++;if(_deferredInstall){b.classList.add('show');clearInterval(t);}if(n>=20)clearInterval(t);},500);
 }
 
@@ -1807,7 +1796,6 @@ window.iniciarApp=async function(){
   await _baseIniciarApp();
   const st=document.getElementById('fab-stack-left');
   if(st)st.classList.add('logado');
-  setTimeout(ativarFabInstall,2000);
   // SW registrado no carregamento da página
 };
 const _baseLogout=fazerLogout;
@@ -1830,23 +1818,9 @@ window.renderAll=function(){
 };
 
 
-// Verificar se já está instalado — esconder banner se sim
-if(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone){
-  document.addEventListener('DOMContentLoaded',()=>{
-    const b=document.getElementById('');
-    if(b)b.style.display='none';
-  });
-}
+// standalone check removido
 
-function fecharBannerInstall(e){
-  if(e)e.stopPropagation();
-  const b=document.getElementById('');
-  if(b){ b.classList.remove('show'); b.style.display='none'; }
-  const ls=document.getElementById('login-screen');
-  if(ls)ls.classList.remove('has-banner');
-  // Salvar preferência para não mostrar de novo por 7 dias
-  localStorage.setItem('install_banner_closed', Date.now());
-}
+function fecharBannerInstall(){}
 
 function fecharCardInstall(){
   var card = document.getElementById('pwa-install-card');
