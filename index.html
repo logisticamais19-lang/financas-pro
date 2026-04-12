@@ -674,30 +674,18 @@ body{overflow-x:hidden;overscroll-behavior-y:contain}
   touch-action:manipulation;
 }
 
-/* ═══ CARD INSTALAR PWA — só mobile ═══ */
-#pwa-install-card{
-  position:fixed;bottom:calc(var(--safe-bot) + 130px);right:12px;
-  z-index:619;display:none;flex-direction:column;
-  width:190px;
-  background:linear-gradient(145deg,#0d2b1a,#0a1f12);
-  border:1px solid rgba(33,208,122,.4);border-radius:18px;
-  padding:14px;
-  box-shadow:0 8px 32px rgba(0,0,0,.55),0 0 0 1px rgba(33,208,122,.1);
-  animation:pwaEntrada .4s cubic-bezier(.34,1.2,.64,1);
-}
-#pwa-install-card.show{display:flex!important}
-@keyframes pwaEntrada{from{opacity:0;transform:translateY(16px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+/* ═══ CARD INSTALAR PWA — só mobile, acima da calculadora ═══ */
+#pwa-install-card{position:fixed;bottom:calc(var(--safe-bot) + 130px);right:12px;z-index:619;display:none;flex-direction:column;width:190px;background:linear-gradient(145deg,#0d2b1a,#0a1f12);border:1px solid rgba(33,208,122,.4);border-radius:18px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,.55)}
+#pwa-install-card.show{display:flex!important;animation:pwaIn .4s cubic-bezier(.34,1.2,.64,1)}
+@keyframes pwaIn{from{opacity:0;transform:translateY(16px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(min-width:769px){#pwa-install-card{display:none!important}}
-.pwa-close{position:absolute;top:8px;right:10px;background:none;border:none;color:rgba(255,255,255,.3);font-size:14px;cursor:pointer;padding:2px 4px;line-height:1}
+.pwa-close{position:absolute;top:8px;right:10px;background:none;border:none;color:rgba(255,255,255,.3);font-size:14px;cursor:pointer;padding:2px 4px}
 .pwa-icon{font-size:30px;text-align:center;margin-bottom:8px}
 .pwa-title{font-size:13px;font-weight:800;color:#21d07a;text-align:center;margin-bottom:3px}
 .pwa-sub{font-size:10px;color:rgba(255,255,255,.45);text-align:center;line-height:1.5;margin-bottom:11px}
-.pwa-btn{width:100%;padding:10px;background:linear-gradient(135deg,#21d07a,#16a34a);color:#041309;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 3px 12px rgba(33,208,122,.3);-webkit-tap-highlight-color:transparent}
+.pwa-btn{width:100%;padding:10px;background:linear-gradient(135deg,#21d07a,#16a34a);color:#041309;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .pwa-btn:active{transform:scale(.96)}
 .pwa-arrow{position:absolute;bottom:-10px;right:18px;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:10px solid rgba(33,208,122,.4)}
-.pwa-arrow::after{content:'';position:absolute;bottom:2px;left:-8px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #0d2b1a}
-@keyframes pulsePWA{0%,100%{box-shadow:0 8px 32px rgba(0,0,0,.55),0 0 0 1px rgba(33,208,122,.1)}50%{box-shadow:0 8px 32px rgba(0,0,0,.55),0 0 0 3px rgba(33,208,122,.25)}}
-#pwa-install-card.show{animation:pwaEntrada .4s cubic-bezier(.34,1.2,.64,1),pulsePWA 2.5s ease-in-out 1s infinite}
 </style>
 </head>
 <body>
@@ -1341,64 +1329,45 @@ document.getElementById('install-close').onclick=()=>document.getElementById('in
   setTimeout(()=>pedirPermissaoNotif&&pedirPermissaoNotif(),6000);
 })();
 
+
 // ═══ PWA INSTALL — card flutuante só mobile ═══
-var _pwaPrompt = null;
-
-window.addEventListener('beforeinstallprompt', function(e){
+var _pwaPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){
   e.preventDefault();
-  _pwaPrompt = e;
-
-  var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-  var isApp = window.matchMedia('(display-mode:standalone)').matches || window.navigator.standalone;
-  var fechado = parseInt(localStorage.getItem('pwa_fechado')||'0');
-  var recente = (Date.now()-fechado) < (3*24*60*60*1000);
-
-  if(!isMobile || isApp || recente) return;
-
-  var card = document.getElementById('pwa-install-card');
-  if(card) card.classList.add('show');
+  _pwaPrompt=e;
+  var mob=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  var app=window.matchMedia('(display-mode:standalone)').matches||!!window.navigator.standalone;
+  var fechado=parseInt(localStorage.getItem('pwa_fechado')||'0');
+  var recente=(Date.now()-fechado)<(3*24*60*60*1000);
+  if(!mob||app||recente)return;
+  var c=document.getElementById('pwa-install-card');
+  if(c)c.classList.add('show');
 });
-
-window.addEventListener('appinstalled', function(){
-  _pwaPrompt = null;
+window.addEventListener('appinstalled',function(){
+  _pwaPrompt=null;
   fecharCardPWA();
-  if(typeof notify === 'function') notify('🎉 App instalado! Acesse pela tela inicial.');
+  if(typeof notify==='function')notify('🎉 App instalado! Acesse pela tela inicial.');
 });
-
 function instalarPWA(){
+  if(/iPhone|iPad|iPod/i.test(navigator.userAgent)&&!_pwaPrompt){
+    if(typeof notify==='function')notify('📱 Safari: ↑ Compartilhar → Adicionar à Tela Inicial','warn');
+    return;
+  }
   if(!_pwaPrompt){
-    if(/iPhone|iPad|iPod/i.test(navigator.userAgent)){
-      if(typeof notify==='function') notify('📱 No Safari: ↑ Compartilhar → Adicionar à Tela Inicial','warn');
-    } else {
-      if(typeof notify==='function') notify('📲 Abra no Chrome Android para instalar','warn');
-    }
+    if(typeof notify==='function')notify('📲 Abra no Chrome Android para instalar','warn');
     return;
   }
   _pwaPrompt.prompt();
   _pwaPrompt.userChoice.then(function(r){
-    if(r.outcome==='accepted'){
-      fecharCardPWA();
-      if(typeof notify==='function') notify('🎉 App instalado!');
-    }
-    _pwaPrompt = null;
+    if(r.outcome==='accepted'){fecharCardPWA();if(typeof notify==='function')notify('🎉 App instalado!');}
+    _pwaPrompt=null;
   });
 }
-
 function fecharCardPWA(){
-  var card = document.getElementById('pwa-install-card');
-  if(card){ card.classList.remove('show'); }
-  localStorage.setItem('pwa_fechado', Date.now());
+  var c=document.getElementById('pwa-install-card');
+  if(c)c.classList.remove('show');
+  localStorage.setItem('pwa_fechado',Date.now());
 }
-
-// Registrar SW imediatamente
-if('serviceWorker' in navigator){
-  window.addEventListener('load', function(){
-    navigator.serviceWorker.register('./sw.js',{scope:'./'})
-      .then(function(r){ console.log('✅ SW:', r.scope); r.update(); })
-      .catch(function(e){ console.warn('SW:', e); });
-  });
-}
-
 </script>
 
 <!-- CARD INSTALAR PWA (só mobile, acima da calculadora) -->
@@ -1406,7 +1375,7 @@ if('serviceWorker' in navigator){
   <button class="pwa-close" onclick="fecharCardPWA()">✕</button>
   <div class="pwa-icon">📲</div>
   <div class="pwa-title">Instalar Finanças Pro</div>
-  <div class="pwa-sub">Adicione à tela inicial e use como app nativo</div>
+  <div class="pwa-sub">Adicione à tela inicial e use como app</div>
   <button class="pwa-btn" onclick="instalarPWA()">⬇ Instalar agora</button>
   <div class="pwa-arrow"></div>
 </div>
