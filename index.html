@@ -686,6 +686,10 @@ body{overflow-x:hidden;overscroll-behavior-y:contain}
 .pwa-btn{width:100%;padding:10px;background:linear-gradient(135deg,#21d07a,#16a34a);color:#041309;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .pwa-btn:active{transform:scale(.96)}
 .pwa-arrow{position:absolute;bottom:-10px;right:18px;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:10px solid rgba(33,208,122,.4)}
+
+/* Topbar extras */
+@media(max-width:1100px){ .qa-label-hide { display:none !important; } }
+@media(max-width:768px){ .topbar-extras { display:none !important; } }
 </style>
 </head>
 <body>
@@ -771,6 +775,22 @@ body{overflow-x:hidden;overscroll-behavior-y:contain}
         <button class="bell-btn" id="bell-btn" onclick="abrirNC()" title="Notificações">🔔</button>
         <span class="bell-badge" id="bell-badge"></span>
       </div>
+      <!-- Botões extras na topbar -->
+      <button onclick="abrirModal('modal-deus')"
+        style="display:flex;align-items:center;gap:5px;padding:7px 11px;background:rgba(234,179,8,.1);border:0.5px solid rgba(234,179,8,.4);border-radius:10px;color:#fbbf24;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent"
+        title="Deus Seja Louvado">
+        <span>✝</span><span class="qa-label-hide">Deus Seja Louvado</span>
+      </button>
+      <button onclick="abrirModalScoreIA('ia')"
+        style="display:flex;align-items:center;gap:5px;padding:7px 11px;background:rgba(155,125,248,.1);border:0.5px solid rgba(155,125,248,.3);border-radius:10px;color:#9b7df8;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent"
+        title="Análise IA">
+        <span>🤖</span><span class="qa-label-hide">Análise IA</span>
+      </button>
+      <button onclick="abrirModalScoreIA('score')"
+        style="display:flex;align-items:center;gap:5px;padding:7px 11px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.12);border-radius:10px;color:#94a3b8;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent"
+        title="Score Financeiro">
+        <span>📊</span><span class="qa-label-hide">Score</span>
+      </button>
       <div class="qa-wrap" id="qa-wrap">
         <button class="btn-add" id="qa-btn" onclick="toggleQA(event)">＋ Novo Lançamento</button>
         <div class="qa-menu" id="qa-menu">
@@ -1033,32 +1053,54 @@ body{overflow-x:hidden;overscroll-behavior-y:contain}
       <div class="modal-title">Novo Lançamento</div>
       <button class="modal-close" onclick="fecharModal('modal-mob-fab')"></button>
     </div>
-    <div class="modal-body" style="padding-bottom:6px">
-      <button class="mob-sheet-item" onclick="fecharModal('modal-mob-fab');setTimeout(abrirModalGasto,100)">
-        <div class="mob-sheet-icon" style="background:rgba(249,115,22,.15);color:var(--orange)">💳</div>
-        <div class="mob-sheet-info"><div class="mob-sheet-title">Gasto no Cartão</div><div class="mob-sheet-sub">Crédito, débito, parcelado</div></div>
-        <span style="color:var(--muted);font-size:20px">›</span>
-      </button>
-      <button class="mob-sheet-item" onclick="fecharModal('modal-mob-fab');setTimeout(abrirModalDiario,100)">
-        <div class="mob-sheet-icon" style="background:rgba(34,211,238,.12);color:var(--cyan)">📋</div>
-        <div class="mob-sheet-info"><div class="mob-sheet-title">Gasto Diário</div><div class="mob-sheet-sub">PIX, dinheiro, débito</div></div>
-        <span style="color:var(--muted);font-size:20px">›</span>
-      </button>
-      <button class="mob-sheet-item" onclick="fecharModal('modal-mob-fab');setTimeout(abrirModalConta,100)">
-        <div class="mob-sheet-icon" style="background:rgba(244,63,94,.12);color:var(--red)">🔒</div>
-        <div class="mob-sheet-info"><div class="mob-sheet-title">Conta Fixa</div><div class="mob-sheet-sub">Aluguel, luz, internet…</div></div>
-        <span style="color:var(--muted);font-size:20px">›</span>
-      </button>
-      <button class="mob-sheet-item" onclick="fecharModal('modal-mob-fab');setTimeout(abrirModalRecorrente,100)">
-        <div class="mob-sheet-icon" style="background:rgba(167,139,250,.12);color:var(--purple)">🔁</div>
-        <div class="mob-sheet-info"><div class="mob-sheet-title">Recorrente</div><div class="mob-sheet-sub">Repete automaticamente</div></div>
-        <span style="color:var(--muted);font-size:20px">›</span>
-      </button>
-      <button class="mob-sheet-item" onclick="fecharModal('modal-mob-fab');setTimeout(editarSalario,100)">
-        <div class="mob-sheet-icon" style="background:rgba(34,197,94,.12);color:var(--green)">💰</div>
-        <div class="mob-sheet-info"><div class="mob-sheet-title">Editar Receita</div><div class="mob-sheet-sub">Salário e extras</div></div>
-        <span style="color:var(--muted);font-size:20px">›</span>
-      </button>
+    <div class="modal-body" style="padding-bottom:24px">
+      <!-- Grid 2x2 lançamentos -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <button onclick="fecharModal('modal-mob-fab');setTimeout(abrirModalGasto,100)"
+          style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 8px;background:rgba(249,115,22,.08);border:0.5px solid rgba(249,115,22,.3);border-radius:16px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+          <span style="font-size:30px">💳</span>
+          <div style="font-size:13px;font-weight:800;color:#f0f4ff">Gasto Cartão</div>
+          <div style="font-size:10px;color:#7a8aa8">Crédito / Débito</div>
+        </button>
+        <button onclick="fecharModal('modal-mob-fab');setTimeout(abrirModalDiario,100)"
+          style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 8px;background:rgba(34,211,238,.08);border:0.5px solid rgba(34,211,238,.3);border-radius:16px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+          <span style="font-size:30px">📋</span>
+          <div style="font-size:13px;font-weight:800;color:#f0f4ff">Gasto Diário</div>
+          <div style="font-size:10px;color:#7a8aa8">Categorizado</div>
+        </button>
+        <button onclick="fecharModal('modal-mob-fab');setTimeout(abrirModalConta,100)"
+          style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 8px;background:rgba(244,63,94,.08);border:0.5px solid rgba(244,63,94,.3);border-radius:16px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+          <span style="font-size:30px">🔒</span>
+          <div style="font-size:13px;font-weight:800;color:#f0f4ff">Conta Fixa</div>
+          <div style="font-size:10px;color:#7a8aa8">Vencimento mensal</div>
+        </button>
+        <button onclick="fecharModal('modal-mob-fab');setTimeout(abrirModalRecorrente,100)"
+          style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 8px;background:rgba(167,139,250,.08);border:0.5px solid rgba(167,139,250,.3);border-radius:16px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+          <span style="font-size:30px">🔁</span>
+          <div style="font-size:13px;font-weight:800;color:#f0f4ff">Recorrente</div>
+          <div style="font-size:10px;color:#7a8aa8">Auto todo mês</div>
+        </button>
+      </div>
+      <!-- Divisor -->
+      <div style="height:0.5px;background:rgba(255,255,255,.07);margin-bottom:14px"></div>
+      <!-- Ferramentas 3 colunas -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+        <button onclick="fecharModal('modal-mob-fab');abrirModal('modal-deus')"
+          style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px;background:rgba(234,179,8,.07);border:0.5px solid rgba(234,179,8,.3);border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+          <span style="font-size:24px">✝</span>
+          <div style="font-size:10px;font-weight:700;color:#fbbf24;text-align:center;line-height:1.4">Deus Seja<br>Louvado</div>
+        </button>
+        <button onclick="fecharModal('modal-mob-fab');abrirModalScoreIA('ia')"
+          style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px;background:rgba(167,139,250,.07);border:0.5px solid rgba(167,139,250,.3);border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+          <span style="font-size:24px">🤖</span>
+          <div style="font-size:10px;font-weight:700;color:#9b7df8;text-align:center;line-height:1.4">Análise<br>IA</div>
+        </button>
+        <button onclick="fecharModal('modal-mob-fab');abrirModalScoreIA('score')"
+          style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px;background:rgba(255,255,255,.04);border:0.5px solid rgba(255,255,255,.1);border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+          <span style="font-size:24px">📊</span>
+          <div style="font-size:10px;font-weight:700;color:#94a3b8;text-align:center;line-height:1.4">Score<br>Financeiro</div>
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -1368,6 +1410,78 @@ function fecharCardPWA(){
   if(c)c.classList.remove('show');
   localStorage.setItem('pwa_fechado',Date.now());
 }
+
+// ── SCORE FINANCEIRO ──
+function calcularScore(){
+  const d=getMes(mesAtual),t=totalMonth(d);
+  const sal=Number(d.salario||0)+Number(d.receitaExtra||0);
+  let s=400;
+  if(sal>0){const u=t.total/sal;if(u<=0.4)s+=250;else if(u<=0.6)s+=180;else if(u<=0.75)s+=100;else if(u<=0.9)s+=40;else if(u>1)s-=200;}
+  s+=(goalsDB||[]).filter(g=>Number(g.atual)>=Number(g.alvo)).length*40;
+  const c=d.contas||[];if(c.length)s+=Math.round(c.filter(x=>x.pago).length/c.length*80);
+  if(recurringDB.length>=3)s+=50;
+  s=Math.max(0,Math.min(1000,Math.round(s)));
+  const SCORES=[{min:0,max:199,cor:'#f0526b',lbl:'⚠️ Crítico'},{min:200,max:399,cor:'#f59e0b',lbl:'📉 Instável'},
+    {min:400,max:599,cor:'#eab308',lbl:'📊 Regular'},{min:600,max:749,cor:'#38bdf8',lbl:'👍 Bom'},
+    {min:750,max:899,cor:'#21d07a',lbl:'🌟 Excelente'},{min:900,max:1000,cor:'#9b7df8',lbl:'🏆 Elite'}];
+  const d2=SCORES.find(x=>s>=x.min&&s<=x.max)||SCORES[0];
+  const num=document.getElementById('score-num');if(num){num.textContent=s;num.style.color=d2.cor;}
+  const cls=document.getElementById('score-class');if(cls)cls.textContent=d2.lbl;
+  const arc=document.getElementById('score-arc');if(arc){arc.style.stroke=d2.cor;arc.style.strokeDashoffset=345-(345*s/1000);}
+  return s;
+}
+
+function abrirModalScoreIA(aba){
+  abrirModal('modal-score-ia');
+  const sc=document.getElementById('tab-score-content');
+  const ia=document.getElementById('tab-ia-content');
+  const sb=document.getElementById('tab-score-btn');
+  const ib=document.getElementById('tab-ia-btn');
+  const isS=(aba||'score')==='score';
+  if(sc)sc.style.display=isS?'block':'none';
+  if(ia)ia.style.display=isS?'none':'block';
+  if(sb){sb.style.background=isS?'rgba(33,208,122,.15)':'transparent';sb.style.color=isS?'var(--green)':'var(--muted2)';}
+  if(ib){ib.style.background=!isS?'rgba(155,125,248,.15)':'transparent';ib.style.color=!isS?'var(--purple)':'var(--muted2)';}
+  if(isS)calcularScore();
+}
+
+function trocarTabScoreIA(aba){ abrirModalScoreIA(aba); }
+
+function gerarAnaliseLocal(r){
+  const uso=parseFloat(r.usoSalarioPct)||0,saldo=r.saldo||0;
+  const cats=(r.categorias||[]).sort((a,b)=>b.gasto-a.gasto).slice(0,3);
+  let diag=uso>100?'⚠️ Gastou **'+uso.toFixed(0)+'%** do salário — saldo negativo **'+fmt(Math.abs(saldo))+'**':
+    uso>85?'🟠 Uso elevado: **'+uso.toFixed(0)+'%** — saldo **'+fmt(saldo)+'**':
+    uso>65?'🟡 Uso moderado: **'+uso.toFixed(0)+'%** — saldo **'+fmt(saldo)+'**':
+    '✅ Excelente: **'+uso.toFixed(0)+'%** comprometido — saldo **'+fmt(saldo)+'**';
+  const catLines=cats.map(c=>'- **'+c.nome+'**: '+fmt(c.gasto)).join('\n')||'- Sem gastos';
+  const pontos=[];
+  if(uso>80)pontos.push('Reduza gastos variáveis');
+  if((r.contasPendentes||0)>0)pontos.push(r.contasPendentes+' conta(s) pendente(s)');
+  if(cats[0])pontos.push('"'+cats[0].nome+'" é seu maior gasto');
+  while(pontos.length<3)pontos.push('Registre gastos diariamente');
+  return'**📊 Diagnóstico**\n'+diag+'\n\n**🏷️ Maiores gastos**\n'+catLines+'\n\n**⚠️ Atenção**\n- '+pontos.join('\n- ')+'\n\n**💡 Dica**\nCom saldo de **'+fmt(saldo)+'**, separe 30% para reserva.';
+}
+
+async function analisarIA(viaModal){
+  if(!viaModal)abrirModalScoreIA('ia');
+  const d=getMes(mesAtual),t=totalMonth(d);
+  const sal=Number(d.salario||0)+Number(d.receitaExtra||0);
+  const cats=(d.categorias||[]).map(c=>({nome:c.nome,gasto:catTotal(c.id,d)})).filter(c=>c.gasto>0);
+  const resumo={mesAtual,salario:sal,totalGastos:t.total,saldo:t.saldo,
+    usoSalarioPct:sal>0?(t.total/sal*100).toFixed(1):0,
+    categorias:cats,contasPendentes:(d.contas||[]).filter(c=>!c.pago).length};
+  const el=document.getElementById('ia-modal-conteudo');
+  const btn=document.getElementById('ia-modal-btn');
+  if(el)el.innerHTML='<div style="color:var(--muted2);padding:16px 0;text-align:center">⏳ Gerando análise...</div>';
+  if(btn)btn.disabled=true;
+  await new Promise(r=>setTimeout(r,600));
+  const texto=gerarAnaliseLocal(resumo);
+  const html=texto.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  if(el)el.innerHTML='<div style="font-size:13px;line-height:1.8;color:var(--text2)">'+html+'</div>';
+  if(btn){btn.disabled=false;btn.textContent='🤖 Nova análise';}
+  if(typeof notify==='function')notify('✅ Análise gerada!');
+}
 </script>
 
 <!-- CARD INSTALAR PWA (só mobile, acima da calculadora) -->
@@ -1378,6 +1492,69 @@ function fecharCardPWA(){
   <div class="pwa-sub">Adicione à tela inicial e use como app</div>
   <button class="pwa-btn" onclick="instalarPWA()">⬇ Instalar agora</button>
   <div class="pwa-arrow"></div>
+</div>
+
+<!-- MODAL DEUS SEJA LOUVADO -->
+<div class="modal-wrap" id="modal-deus">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header">
+      <div class="modal-title" style="color:#fbbf24">✝ Deus Seja Louvado</div>
+      <button class="modal-close" onclick="fecharModal('modal-deus')"></button>
+    </div>
+    <div class="modal-body" style="padding-bottom:28px;text-align:center">
+      <div style="font-size:48px;margin:8px 0">🙏</div>
+      <div style="background:rgba(234,179,8,.05);border-left:3px solid rgba(234,179,8,.4);border-radius:0 10px 10px 0;padding:12px 16px;text-align:left;margin-bottom:12px;font-style:italic;font-size:14px;line-height:1.8;color:var(--text2)">
+        "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna."
+        <div style="font-size:11px;color:var(--muted2);margin-top:6px;font-style:normal">— João 3:16</div>
+      </div>
+      <div style="background:rgba(234,179,8,.05);border-left:3px solid rgba(234,179,8,.4);border-radius:0 10px 10px 0;padding:12px 16px;text-align:left;margin-bottom:14px;font-style:italic;font-size:14px;line-height:1.8;color:var(--text2)">
+        "O Senhor é o meu pastor e nada me faltará."
+        <div style="font-size:11px;color:var(--muted2);margin-top:6px;font-style:normal">— Salmos 23:1</div>
+      </div>
+      <div style="font-size:12px;color:var(--muted)">Que Deus abençoe suas finanças e sua família. 🙌</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SCORE + IA -->
+<div class="modal-wrap" id="modal-score-ia">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-header" style="padding-bottom:0">
+      <div style="display:flex;gap:3px;background:rgba(255,255,255,.04);border-radius:10px;padding:3px;flex:1;margin-right:10px">
+        <button id="tab-score-btn" onclick="trocarTabScoreIA('score')"
+          style="flex:1;padding:7px;border-radius:8px;font-size:12px;font-weight:800;background:rgba(33,208,122,.15);color:var(--green);border:none;cursor:pointer">📊 Score</button>
+        <button id="tab-ia-btn" onclick="trocarTabScoreIA('ia')"
+          style="flex:1;padding:7px;border-radius:8px;font-size:12px;font-weight:800;background:transparent;color:var(--muted2);border:none;cursor:pointer">🤖 Análise IA</button>
+      </div>
+      <button class="modal-close" onclick="fecharModal('modal-score-ia')"></button>
+    </div>
+    <div class="modal-body" style="padding-top:16px;padding-bottom:20px">
+      <div id="tab-score-content">
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
+          <div style="position:relative;width:110px;height:64px;overflow:hidden;flex-shrink:0">
+            <svg viewBox="0 0 140 140" style="width:140px;height:140px;margin-top:-70px;margin-left:-15px">
+              <circle cx="70" cy="70" r="55" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="14" stroke-linecap="round" stroke-dasharray="345 345" transform="rotate(180 70 70)"/>
+              <circle id="score-arc" cx="70" cy="70" r="55" fill="none" stroke="#21d07a" stroke-width="14" stroke-linecap="round" stroke-dasharray="345 345" style="stroke-dashoffset:345;transition:all 1s" transform="rotate(180 70 70)"/>
+            </svg>
+          </div>
+          <div>
+            <div style="display:flex;align-items:baseline;gap:8px">
+              <div id="score-num" style="font-size:38px;font-weight:800;color:var(--green)">—</div>
+              <div style="font-size:11px;color:var(--muted2)">/1000</div>
+            </div>
+            <div id="score-class" style="font-size:13px;font-weight:700;margin-top:2px">Calculando...</div>
+          </div>
+        </div>
+      </div>
+      <div id="tab-ia-content" style="display:none">
+        <div id="ia-modal-conteudo" style="font-size:13px;line-height:1.8;color:var(--text2);min-height:60px">Toque em "Gerar análise" para o diagnóstico do mês.</div>
+        <button id="ia-modal-btn" onclick="analisarIA(true)"
+          style="width:100%;margin-top:14px;padding:13px;background:rgba(155,125,248,.1);border:0.5px solid rgba(155,125,248,.3);color:var(--purple);border-radius:14px;font-size:13px;font-weight:800;cursor:pointer">
+          🤖 Gerar análise agora
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 </body>
 </html>
